@@ -23,6 +23,7 @@ CONTEXT_MAX_TOKENS = {'mistralai/Mistral-7B-Instruct-v0.2': 8192,
                       'meta-llama/Llama-3.2-3B-Instruct': 4096,
                       'meta-llama/Llama-3.2-1B-Instruct': 4096,
                       'loganchew/rbft_llama3': 8192,
+                      'loganchew/rbft_llama3_v2': 8192,
                       'meta-llama/Meta-Llama-3-8B-Instruct': 8192, 
                       'mistralai/Mixtral-8x7B-Instruct-v0.1': 32000,
                       'gpt-3.5-turbo-0125':16385,
@@ -45,6 +46,8 @@ def create_model(model_name,**kwargs):
     # Added Rbft Llama 3.2 3B model
     elif model_name == 'rbft_llama':
         return HFModel('loganchew/rbft_llama3', LLAMA_TMPL, **kwargs)
+    elif model_name == 'rbft_llama_v2':
+        return HFModel('loganchew/rbft_llama3_v2', LLAMA_TMPL, **kwargs)    
     # some other models that are not included in the paper
     elif model_name == 'llama8b':
         return HFModel('meta-llama/Meta-Llama-3-8B-Instruct',LLAMA_TMPL,**kwargs)

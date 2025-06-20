@@ -4,6 +4,7 @@ model2path:
   llama: "meta-llama/Llama-3.2-3B-Instruct"
   qwen: "Qwen/Qwen2.5-3B-Instruct"
   rbft_llama: "loganchew/rbft_llama3"
+  rbft_llama_v2: "loganchew/rbft_llama3_v2"
   rbft_qwen: "rbft/model/rbft_qwen"
 
 save_dir: "log/"
