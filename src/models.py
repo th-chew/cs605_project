@@ -231,7 +231,46 @@ class BaseModel:
             context_str = '\n\n'.join(psgs)
             return fill_template(template,query,context_str,use_retrieval,hints)        
 
+    def wrap_mcq_prompt_flashrag(self, query, psgs, hints=None,seperate=False, multiple_choice=None):  
+        # use data_item and generate the input prompt to the LLM
 
+        # data_item should be the output of DataUtils.process_data_item()
+        # as_multi_choice: if use it as a multiple-choice QA
+        # hints: if we are using hints in the last step of the keyword aggregation
+        # seperate: if True, return a list of prompts for differnet passages; otherwise, concatenate all passages and return a single prompt
+
+        use_retrieval = len(psgs) > 0 # if we use retrieved passage
+        # print hints
+        # if hints is not None:
+        #     hints = 'Hints: ' + hints + '\n\n'
+        # print(multiple_choice)
+
+        def fill_template(template,query,context_str,use_retrieval,hints):
+            filling = {'query_str': query}
+            if use_retrieval:
+                filling.update({'context_str': context_str})
+            if multiple_choice is not None:
+                filling.update({
+                        'multiple_choice': "\n".join(multiple_choice),
+                    })
+            if hints is not None:
+                filling.update({'hints':hints})
+            return template.format(**filling)
+
+        # get corresponding template
+        mode = 'qa'
+        if multiple_choice: mode += '-mc'
+        if hints is not None: mode += '-hint' 
+        template = self.prompt_template[mode]
+        # print(f"Using template: {template}")
+        
+        if seperate:
+            # [print(fill_template(template,query,context_str,use_retrieval,hints)) for context_str in psgs]
+            return [fill_template(template,query,context_str,use_retrieval,hints) for context_str in psgs]
+        else:
+            context_str = '\n\n'.join(psgs)
+            # print(fill_template(template,query,context_str,use_retrieval,hints))
+            return fill_template(template,query,context_str,use_retrieval,hints)     
 
 
 class HFModel(BaseModel):

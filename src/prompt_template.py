@@ -62,6 +62,50 @@ ZERO_QA_MC_PROMPT_TMPL =  (
 )
 
 
+QA_HINT_MC_PROMPT_TMPL_LLAMA =   (
+    "Word suggestion is below.\n"
+    "---------------------\n"
+    "Starfield, Halo, 2023 releases, Forza\n"
+    "---------------------\n"
+    "Given the word suggestion provided by experts, concisely answer the query.\n"
+    "Query: What new video game titles are being released by Microsoft this year?\n"
+    "Answer: Starfield, Forza Motorsport\n\n\n"
+
+    "Word suggestion is below.\n"
+    "---------------------\n"
+    "California, $15.50, Minimum wage, Increased, Economic impact\n"
+    "---------------------\n"
+    "Given the word suggestion provided by experts, concisely answer the query.\n"
+    "Query: What is the minimum wage in California as of this year?\n"
+    "Answer: $15.50\n\n\n"
+
+    "Word suggestion is below.\n"
+    "---------------------\n"
+    "Olympic gold, Swimming, Phelps, Michael\n"
+    "---------------------\n"
+    "Given the word suggestion provided by experts, concisely answer the query.\n"
+    "Query: Who holds the record for the most Olympic gold medals in swimming?\n"
+    "Answer: Michael Phelps\n\n\n"
+
+    "Word suggestion is below.\n"
+    "---------------------\n"
+    "NASA, James Webb Telescope, Space exploration, $1 billion, Funding\n"
+    "---------------------\n"
+    "Given the word suggestion provided by experts, concisely answer the query.\n"
+    "Query:  How much did NASA invest in developing the James Webb Space Telescope?\n"
+    "Answer: $1 billion or $1 billion funding\n\n\n"
+
+    "Word suggestion is below.\n"
+    "---------------------\n"
+    "{hints}\n"
+    "---------------------\n"
+    "Given the word suggestion provided by experts, concisely answer the query.\n"
+    "Output the best candidate answer from a, b, c or d that answers the query. \n"
+    "Query: {query_str}\n"
+    "Candidates: \n{multiple_choice} \n"
+    "Answer: \n"
+)
+
 
 QA_PROMPT_TMPL =   (
 
@@ -307,6 +351,7 @@ LLAMA_TMPL = {
     'qa-zero': ZERO_QA_PROMPT_TMPL,
     'qa-zero-decode': ZERO_QA_DECODE_PROMPT_TMPL,
     'qa-hint':QA_PROMPT_HINTS_TMPL,
+    'qa-mc-hint':QA_HINT_MC_PROMPT_TMPL_LLAMA,
 
     'qa-long':QA_PROMPT_LONG_TMPL,
     'qa-long-zero':QA_PROMPT_LONG_ZERO_TMPL,

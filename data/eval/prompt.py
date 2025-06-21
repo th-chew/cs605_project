@@ -189,3 +189,71 @@ class NaivePromptTemplate(BasePromptTemplate):
             input = "\n\n".join([prompt for prompt in [system_prompt, user_prompt] if prompt != ""])
 
         return self.truncate_prompt(input)
+
+
+
+class MCQPromptTemplate(BasePromptTemplate):
+    placeholders = ["reference", "question"]
+    base_system_prompt = (
+        "Answer the multiple choice question based on the given documents. "
+        "Try to find the best candidate answer to the query. "
+        "Only give me the answer and do not output any other words."
+        "\nThe following are given documents.\n\n{reference}"
+    )
+    base_user_prompt = "Question: {question} \nCandidates: \n{multiple_choice} \n\n Output the best candidate answer from a, b, c or d \n"
+
+    def __init__(self, config, system_prompt="", user_prompt="", reference_template=None, enable_chat=True, multiple_choice=None):
+
+        super().__init__(config)
+
+        if len(system_prompt) == 0 and len(user_prompt) == 0:
+            system_prompt = self.base_system_prompt
+            user_prompt = self.base_user_prompt
+        self.system_prompt = system_prompt
+        self.user_prompt = user_prompt
+        self.enable_chat = enable_chat
+        self.reference_template = reference_template
+
+
+    def get_string(self, question=None, retrieval_result=None, formatted_reference=None, messages=None, multiple_choice=None, **params):
+        if messages is not None:
+            if isinstance(messages, str):
+                return self.truncate_prompt(messages)
+            if self.is_chat and self.enable_chat:
+                if self.is_openai:
+                    self.truncate_prompt(messages)
+                else:
+                    prompt = self.tokenizer.apply_chat_template(
+                        messages, tokenize=False, add_generation_prompt=True
+                    )
+                    return self.truncate_prompt(prompt)
+            else:
+                prompt = "\n\n".join(
+                    [message['content'] for message in messages if message['content']]
+                )
+                return self.truncate_prompt(prompt)
+
+        if formatted_reference is None:
+            if retrieval_result is not None:
+                formatted_reference = self.format_reference(retrieval_result)
+            else:
+                formatted_reference = ""
+
+        input_params = {"question": question, "reference": formatted_reference, "multiple_choice": multiple_choice}
+        input_params.update(**params)
+        
+        system_prompt = self.system_prompt.format(**input_params)
+        user_prompt = self.user_prompt.format(**input_params)
+
+        if self.is_chat and self.enable_chat:
+            input = []
+            if system_prompt != "":
+                input.append({"role": "system", "content": system_prompt})
+            if user_prompt != "":
+                input.append({"role": "user", "content": user_prompt})
+            if not self.is_openai:
+                input = self.tokenizer.apply_chat_template(input, tokenize=False, add_generation_prompt=True)
+        else:
+            input = "\n\n".join([prompt for prompt in [system_prompt, user_prompt] if prompt != ""])
+        # print(self.truncate_prompt(input))
+        return self.truncate_prompt(input)
