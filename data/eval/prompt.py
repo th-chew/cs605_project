@@ -191,7 +191,6 @@ class NaivePromptTemplate(BasePromptTemplate):
         return self.truncate_prompt(input)
 
 
-
 class MCQPromptTemplate(BasePromptTemplate):
     placeholders = ["reference", "question"]
     base_system_prompt = (
